@@ -30,9 +30,9 @@ final class Coordinator: CoordinatorProtocol {
             self.navigationControllers[$0]
         }
         tabBarController.setViewControllers(navigationControllers, animated: true)
+        tabBarController.tabBar.barTintColor = UIColor(named: "tabBarColor")
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()
-       // UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve, animations: {})
     }
 }
 
