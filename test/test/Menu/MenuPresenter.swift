@@ -25,7 +25,24 @@ extension MenuPresenter: MenuModuleInput {
 }
 
 extension MenuPresenter: MenuViewOutput {
+    var advPhoto: String {
+        return "photo2"
+    }
+    
+    var numberOfCellsInAdvSection: Int {
+        return 5
+    }
+    
+    var numberOfCellsInDishSection: Int {
+        return 10
+    }
+    
+    var numberOfSections: Int {
+        return 2
+    }
+    
 }
 
 extension MenuPresenter: MenuInteractorOutput {
+    
 }
