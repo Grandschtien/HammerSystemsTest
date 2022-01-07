@@ -137,6 +137,7 @@
 		6004775F27859F3600ED1B80 /* test */ = {
 			isa = PBXGroup;
 			children = (
+				6004776E27859F3A00ED1B80 /* Info.plist */,
 				600477EB2785E8A200ED1B80 /* Entities */,
 				600477812785A50400ED1B80 /* Application  */,
 				600477742785A4BC00ED1B80 /* Menu */,
@@ -174,7 +175,6 @@
 				6004776627859F3600ED1B80 /* Main.storyboard */,
 				6004776927859F3A00ED1B80 /* Assets.xcassets */,
 				6004776B27859F3A00ED1B80 /* LaunchScreen.storyboard */,
-				6004776E27859F3A00ED1B80 /* Info.plist */,
 				607F401D2787CE2D0077EFC2 /* KIngFisherManager.swift */,
 			);
 			path = "Application ";
@@ -580,7 +580,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PLUM5QCSG5;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "/Users/egorskarin/Desktop/Test/HammerSystemsTest/test/test/Application /Info.plist";
+				INFOPLIST_FILE = /Users/egorskarin/Desktop/HammerSystemsTest/test/test/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -609,7 +609,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PLUM5QCSG5;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "/Users/egorskarin/Desktop/Test/HammerSystemsTest/test/test/Application /Info.plist";
+				INFOPLIST_FILE = /Users/egorskarin/Desktop/HammerSystemsTest/test/test/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
