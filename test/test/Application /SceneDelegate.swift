@@ -16,6 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         guard let window = window else { return }
+        window.overrideUserInterfaceStyle = .light
         coordinator = Coordinator(window: window)
         coordinator?.start()
     }

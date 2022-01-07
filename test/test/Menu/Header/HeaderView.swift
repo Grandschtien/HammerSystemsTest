@@ -14,7 +14,7 @@ protocol SelectCategoryProtocol: AnyObject {
 class HeaderView: UICollectionReusableView {
     static let reuseId = "HeaderView"
     weak var selectedCategory: SelectCategoryProtocol?
-    private var previousIndex: IndexPath?
+    private var previousIndex: IndexPath = IndexPath(item: 0, section: 0)
     @IBOutlet weak var collctionView: UICollectionView!
     private let categories = ["Пицца", "Комбо", "Напитки", "Десерты", "Закуски", "Соусы", "Другое"]
     
@@ -38,7 +38,7 @@ extension HeaderView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HeaderCell.reuseId,
                                                             for: indexPath) as? HeaderCell else { return UICollectionViewCell()}
-        if indexPath.row == 0 {
+        if indexPath.item == 0 && previousIndex.item == 0 {
             cell.isSelectedCell = true
         }
         cell.configure(name: categories[indexPath.item])
@@ -56,14 +56,17 @@ extension HeaderView: UICollectionViewDelegateFlowLayout {
 extension HeaderView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedCategory?.selectedCategory(indexPath: indexPath)
-        guard let selectedCell = collectionView.cellForItem(at: indexPath) as? HeaderCell else {
+        guard let selectedCell = collectionView.cellForItem(at: indexPath) as? HeaderCell,
+              let previousCell = collectionView.cellForItem(at: previousIndex) as? HeaderCell
+        else {
             return
         }
-        if let previousIndex = previousIndex, let previousCell = collectionView.cellForItem(at: previousIndex) as? HeaderCell {
-            previousCell.isSelectedCell = false
+        if indexPath == previousIndex {
+            return
         } else {
-            previousIndex = indexPath
+            previousCell.isSelectedCell = false
             selectedCell.isSelectedCell = !selectedCell.isSelectedCell
+            previousIndex = indexPath
         }
     }
 }

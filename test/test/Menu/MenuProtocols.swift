@@ -17,6 +17,7 @@ protocol MenuModuleOutput: AnyObject {
 
 protocol MenuViewInput: AnyObject {
     func updateViewWithDishes(dishes: [DishesViewModel])
+    func makeErrorNotification(error: String)
 }
 
 protocol MenuViewOutput: AnyObject {
@@ -33,6 +34,7 @@ protocol MenuInteractorInput: AnyObject {
 
 protocol MenuInteractorOutput: AnyObject {
     func didLoadData(dishes: [Dish])
+    func catchedError(error: Error)
 }
 
 protocol MenuRouterInput: AnyObject {

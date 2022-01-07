@@ -12,6 +12,13 @@ final class MenuViewController: UIViewController {
     private let output: MenuViewOutput
     private var collectionView: UICollectionView?
     private var activityIndicator = UIActivityIndicatorView()
+    
+    //Views для обработки потери сети
+    private let noConnectionLabel = UILabel()
+    private let errorLabel = UILabel()
+    private let errorButton = UIButton(type: .roundedRect)
+    private let errorStackView = UIStackView()
+    
     private var viewModels = [DishesViewModel]()
     
     init(output: MenuViewOutput) {
@@ -50,6 +57,7 @@ extension MenuViewController {
         guard let collectionView = collectionView else { return }
         collectionView.dataSource = self
         collectionView.backgroundColor = UIColor(named: "backColor")
+        collectionView.showsVerticalScrollIndicator = false
         collectionView.register(UINib(nibName: "AdvsCell", bundle: nil),
                                 forCellWithReuseIdentifier: AdvsCell.reuseId)
         collectionView.register(UINib(nibName: "DishCell", bundle: nil),
@@ -85,7 +93,7 @@ extension MenuViewController {
         layout.register(DishDecorationView.self, forDecorationViewOfKind: DishDecorationView.sectionBackgroundDecorationElementKind)
         return layout
     }
-    
+    //MARK: - Создание секции рекламы
     private func createAdvSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                               heightDimension: .fractionalHeight(1))
@@ -106,7 +114,7 @@ extension MenuViewController {
         section.contentInsets = NSDirectionalEdgeInsets.init(top: 20, leading: 8, bottom: 10, trailing: 0)
         return section
     }
-    
+    //MARK: - Создание секции блюд
     private func createDishSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
@@ -128,7 +136,7 @@ extension MenuViewController {
         section.decorationItems = [sectionBackgroundDecoration]
         return section
     }
-    
+    //MARK: - Создание заголовка секции блюд
     private func createHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
         let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                                 heightDimension: .estimated(60))
@@ -137,7 +145,7 @@ extension MenuViewController {
                                                                  alignment: .top)
         return header
     }
-    
+    //MARK: - Создание индикатора загрузки
     private func setupWaitingIndicator() {
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(activityIndicator)
@@ -147,6 +155,7 @@ extension MenuViewController {
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
+        activityIndicator.isHidden = false
     }
 }
 //MARK: - Create datasource
@@ -195,7 +204,6 @@ extension MenuViewController: UICollectionViewDataSource {
                                                                                    for: indexPath) as? HeaderView else {
                 return UICollectionReusableView()
             }
-            headerView.selectedCategory = self
             return headerView
             
         default:
@@ -205,7 +213,50 @@ extension MenuViewController: UICollectionViewDataSource {
 }
 // MARK: - MenuViewInput
 extension MenuViewController: MenuViewInput {
-    
+    func makeErrorNotification(error: String) {
+        DispatchQueue.main.async {[self] in
+            activityIndicator.isHidden = true
+            errorStackView.translatesAutoresizingMaskIntoConstraints = false
+            errorLabel.translatesAutoresizingMaskIntoConstraints = false
+            errorButton.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(errorStackView)
+            errorStackView.addArrangedSubview(errorLabel)
+            errorStackView.addArrangedSubview(errorButton)
+            
+            NSLayoutConstraint.activate([
+                errorStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                errorStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+                errorStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+                errorStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+                errorLabel.trailingAnchor.constraint(equalTo: errorStackView.trailingAnchor),
+                errorLabel.leadingAnchor.constraint(equalTo: errorStackView.leadingAnchor),
+                errorButton.trailingAnchor.constraint(equalTo: errorStackView.trailingAnchor),
+                errorButton.leadingAnchor.constraint(equalTo: errorStackView.leadingAnchor)
+
+            ])
+            
+            errorLabel.text = error
+            
+            errorLabel.font = UIFont.systemFont(ofSize: 20, weight: .regular)
+            errorLabel.textAlignment = .center
+            errorLabel.textColor = .black
+            errorLabel.numberOfLines = 2
+            
+            errorButton.setTitle("Обновить", for: .normal)
+            errorButton.setTitleColor(UIColor(named: "buttonsColor"), for: .normal)
+            errorButton.layer.cornerRadius = 10
+            errorButton.layer.borderWidth = 1
+            errorButton.layer.borderColor = UIColor(named: "buttonsColor")?.cgColor
+            errorStackView.axis = .vertical
+            errorStackView.spacing = 30
+            errorStackView.distribution = .fill
+            errorStackView.alignment = .center
+            errorButton.addTarget(self, action: #selector(reloadView), for: .touchUpInside)
+            errorStackView.isHidden = false
+            errorLabel.isHidden = false
+            errorButton.isHidden = false
+        }
+    }
     func updateViewWithDishes(dishes: [DishesViewModel]) {
         viewModels = dishes
         DispatchQueue.main.async {
@@ -216,9 +267,22 @@ extension MenuViewController: MenuViewInput {
     }
     
 }
+//MARK: - Метод делегата для пролистывания коллекции
 extension MenuViewController: SelectCategoryProtocol {
     func selectedCategory(indexPath: IndexPath) {
         let indexPath = IndexPath(item: indexPath.item * 7, section: 1)
         collectionView?.scrollToItem(at: indexPath, at: .top, animated: true)
+    }
+}
+//MARK: - Actions
+extension MenuViewController {
+    @objc
+    func reloadView() {
+        activityIndicator.startAnimating()
+        activityIndicator.isHidden = false
+        output.viewDidLoad()
+        errorStackView.isHidden = true
+        errorLabel.isHidden = true
+        errorButton.isHidden = true
     }
 }

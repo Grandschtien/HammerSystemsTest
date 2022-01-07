@@ -50,6 +50,10 @@ extension MenuPresenter: MenuViewOutput {
 }
 
 extension MenuPresenter: MenuInteractorOutput {
+    func catchedError(error: Error) {
+        view?.makeErrorNotification(error: error.localizedDescription)
+    }
+    
     func didLoadData(dishes: [Dish]) {
         let viewModels = makeViewModels(dishes: dishes)
         numberOfDishCells = viewModels.count

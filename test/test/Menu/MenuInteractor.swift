@@ -30,8 +30,8 @@ extension MenuInteractor: MenuInteractorInput {
                 }
                 self?.output?.didLoadData(dishes: dishes)
                 break
-            case .failure(_):
-                break
+            case .failure(let error):
+                self?.output?.catchedError(error: error)
             }
         }
     }
