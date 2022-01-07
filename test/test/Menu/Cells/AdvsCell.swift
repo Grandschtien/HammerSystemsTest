@@ -12,7 +12,6 @@ class AdvsCell: UICollectionViewCell {
     static let reuseId = "AdvsCell"
     override func awakeFromNib() {
         super.awakeFromNib()
-        //image.clipsToBounds = true
         image.contentMode = .scaleAspectFill
         layer.cornerRadius = 20
     }

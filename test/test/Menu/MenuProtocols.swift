@@ -16,6 +16,7 @@ protocol MenuModuleOutput: AnyObject {
 }
 
 protocol MenuViewInput: AnyObject {
+    func updateViewWithDishes(dishes: [DishesViewModel])
 }
 
 protocol MenuViewOutput: AnyObject {
@@ -23,19 +24,17 @@ protocol MenuViewOutput: AnyObject {
     var numberOfCellsInAdvSection: Int { get }
     var numberOfCellsInDishSection: Int { get }
     var advPhoto: String { get }
+    func viewDidLoad()
 }
 
 protocol MenuInteractorInput: AnyObject {
+    func loadData()
 }
 
 protocol MenuInteractorOutput: AnyObject {
+    func didLoadData(dishes: [Dish])
 }
 
 protocol MenuRouterInput: AnyObject {
 }
 
-protocol CellProtocol {
-    associatedtype AnyData
-    static var reuseId: String { get }
-    func configure(with data: AnyData)
-}

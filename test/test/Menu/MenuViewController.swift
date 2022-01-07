@@ -11,6 +11,8 @@ import UIKit
 final class MenuViewController: UIViewController {
     private let output: MenuViewOutput
     private var collectionView: UICollectionView?
+    private var activityIndicator = UIActivityIndicatorView()
+    private var viewModels = [DishesViewModel]()
     
     init(output: MenuViewOutput) {
         self.output = output
@@ -23,9 +25,11 @@ final class MenuViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(named: "backColor")
+        output.viewDidLoad()
         setupNavigationBar()
         setupCollectionView()
+        collectionView?.isHidden = true
+        setupWaitingIndicator()
     }
 }
 
@@ -40,6 +44,7 @@ extension MenuViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "leftBarButton"), style: .plain, target: nil, action: nil)
         navigationItem.leftBarButtonItem?.tintColor = .black
     }
+    
     private func setupCollectionView() {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         guard let collectionView = collectionView else { return }
@@ -132,6 +137,17 @@ extension MenuViewController {
                                                                  alignment: .top)
         return header
     }
+    
+    private func setupWaitingIndicator() {
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(activityIndicator)
+        activityIndicator.style = UIActivityIndicatorView.Style.large
+        activityIndicator.startAnimating()
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
 }
 //MARK: - Create datasource
 extension MenuViewController: UICollectionViewDataSource {
@@ -163,7 +179,7 @@ extension MenuViewController: UICollectionViewDataSource {
                                                                 for: indexPath) as? DishCell else {
                 return UICollectionViewCell()
             }
-            cell.configure()
+            cell.configure(viewModel: viewModels[indexPath.row])
             return cell
         default:
             return UICollectionViewCell()
@@ -179,6 +195,7 @@ extension MenuViewController: UICollectionViewDataSource {
                                                                                    for: indexPath) as? HeaderView else {
                 return UICollectionReusableView()
             }
+            headerView.selectedCategory = self
             return headerView
             
         default:
@@ -186,7 +203,22 @@ extension MenuViewController: UICollectionViewDataSource {
         }
     }
 }
-
+// MARK: - MenuViewInput
 extension MenuViewController: MenuViewInput {
     
+    func updateViewWithDishes(dishes: [DishesViewModel]) {
+        viewModels = dishes
+        DispatchQueue.main.async {
+            self.collectionView?.isHidden = false
+            self.activityIndicator.isHidden = true
+            self.collectionView?.reloadData()
+        }
+    }
+    
+}
+extension MenuViewController: SelectCategoryProtocol {
+    func selectedCategory(indexPath: IndexPath) {
+        let indexPath = IndexPath(item: indexPath.item * 7, section: 1)
+        collectionView?.scrollToItem(at: indexPath, at: .top, animated: true)
+    }
 }

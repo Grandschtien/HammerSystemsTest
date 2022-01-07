@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class DishCell: UICollectionViewCell {
     @IBOutlet weak var image: UIImageView!
@@ -15,14 +16,13 @@ class DishCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         image.layer.masksToBounds = true
-        image.layer.borderWidth = 1.0
-        image.layer.borderColor = UIColor.red.cgColor
+        image.contentMode = .scaleAspectFill
         image.layer.cornerRadius = 20
     }
     
-    func configure() {
-        name.text = "agafgagadaaf"
-        ingredients.text = "xcvfgh fghjk cfghj ghjk vbghjk vbnhjm vbnhjm vbnmj vbhnj vbnm"
-        image.image = UIImage(named: "contacts")
+    func configure(viewModel: DishesViewModel) {
+        name.text = viewModel.title
+        ingredients.text = viewModel.extendedIngredients
+        image.kf.setImage(with: viewModel.resource, placeholder: UIImage(named: "menu"))
     }
 }

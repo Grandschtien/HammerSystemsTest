@@ -14,6 +14,7 @@ final class MenuPresenter {
     
 	private let router: MenuRouterInput
 	private let interactor: MenuInteractorInput
+    private var numberOfDishCells: Int?
     
     init(router: MenuRouterInput, interactor: MenuInteractorInput) {
         self.router = router
@@ -25,6 +26,7 @@ extension MenuPresenter: MenuModuleInput {
 }
 
 extension MenuPresenter: MenuViewOutput {
+    
     var advPhoto: String {
         return "photo2"
     }
@@ -33,16 +35,37 @@ extension MenuPresenter: MenuViewOutput {
         return 5
     }
     
-    var numberOfCellsInDishSection: Int {
-        return 10
+   var numberOfCellsInDishSection: Int {
+        return numberOfDishCells ?? 0
     }
     
     var numberOfSections: Int {
         return 2
     }
     
+    func viewDidLoad() {
+        interactor.loadData()
+    }
+    
 }
 
 extension MenuPresenter: MenuInteractorOutput {
-    
+    func didLoadData(dishes: [Dish]) {
+        let viewModels = makeViewModels(dishes: dishes)
+        numberOfDishCells = viewModels.count
+        view?.updateViewWithDishes(dishes: viewModels)
+    }
+  
+}
+
+private extension MenuPresenter {
+    func makeViewModels(dishes: [Dish]) -> [DishesViewModel] {
+        return dishes.map { dish in
+            let nameOfDish = dish.title.capitalized
+            let imageUrl = URL(string: dish.image)
+            let ingredients = dish.extendedIngredients.joined(separator: ", ")
+            let resource = KingFisherManager.setupResourceForCache(url: imageUrl)
+            return DishesViewModel(title: nameOfDish, image: imageUrl, resource: resource, extendedIngredients: ingredients)
+        }
+    }
 }
