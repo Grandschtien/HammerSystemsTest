@@ -204,6 +204,7 @@ extension MenuViewController: UICollectionViewDataSource {
                                                                                    for: indexPath) as? HeaderView else {
                 return UICollectionReusableView()
             }
+            headerView.selectedCategory = self
             return headerView
             
         default:
