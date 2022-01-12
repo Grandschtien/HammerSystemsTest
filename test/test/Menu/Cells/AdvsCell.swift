@@ -9,7 +9,6 @@ import UIKit
 
 class AdvsCell: UICollectionViewCell {
     @IBOutlet weak var image: UIImageView!
-    static let reuseId = "AdvsCell"
     override func awakeFromNib() {
         super.awakeFromNib()
         image.contentMode = .scaleAspectFill

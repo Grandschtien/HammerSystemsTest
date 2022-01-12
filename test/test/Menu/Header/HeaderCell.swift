@@ -8,7 +8,6 @@
 import UIKit
 
 class HeaderCell: UICollectionViewCell {
-    static let reuseId = "HeaderCell"
     @IBOutlet weak var label: UILabel!
     var isSelectedCell: Bool = false {
             didSet {

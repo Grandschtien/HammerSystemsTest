@@ -38,6 +38,10 @@ final class MenuViewController: UIViewController {
         collectionView?.isHidden = true
         setupWaitingIndicator()
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = false
+    }
 }
 
 //MARK: - Create layout
@@ -55,16 +59,17 @@ extension MenuViewController {
     private func setupCollectionView() {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         guard let collectionView = collectionView else { return }
+        collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = UIColor(named: "backColor")
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.register(UINib(nibName: "AdvsCell", bundle: nil),
-                                forCellWithReuseIdentifier: AdvsCell.reuseId)
-        collectionView.register(UINib(nibName: "DishCell", bundle: nil),
-                                forCellWithReuseIdentifier: DishCell.reuseId)
-        collectionView.register(UINib(nibName: "HeaderView", bundle: nil),
+        collectionView.register(UINib(nibName: AdvsCell.nibName, bundle: nil),
+                                forCellWithReuseIdentifier: AdvsCell.reuseIdentifier)
+        collectionView.register(UINib(nibName: DishCell.nibName, bundle: nil),
+                                forCellWithReuseIdentifier: DishCell.reuseIdentifier)
+        collectionView.register(UINib(nibName: HeaderView.nibName, bundle: nil),
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                withReuseIdentifier: HeaderView.reuseId)
+                                withReuseIdentifier: HeaderView.reuseIdentifier)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(collectionView)
         NSLayoutConstraint.activate([
@@ -177,17 +182,11 @@ extension MenuViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
         case 0:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AdvsCell.reuseId,
-                                                                for: indexPath) as? AdvsCell else {
-                return UICollectionViewCell()
-            }
+            let cell = collectionView.dequeueCell(cellType: AdvsCell.self, for: indexPath)
             cell.configure(nameOfPhoto: output.advPhoto)
             return cell
         case 1:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DishCell.reuseId,
-                                                                for: indexPath) as? DishCell else {
-                return UICollectionViewCell()
-            }
+            let cell = collectionView.dequeueCell(cellType: DishCell.self, for: indexPath)
             cell.configure(viewModel: viewModels[indexPath.row])
             return cell
         default:
@@ -285,5 +284,11 @@ extension MenuViewController {
         errorStackView.isHidden = true
         errorLabel.isHidden = true
         errorButton.isHidden = true
+    }
+}
+
+extension MenuViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        output.goToProduct(viewModel: viewModels[indexPath.item])
     }
 }

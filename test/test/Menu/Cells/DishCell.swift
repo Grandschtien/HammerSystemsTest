@@ -12,7 +12,6 @@ class DishCell: UICollectionViewCell {
     @IBOutlet weak var image: UIImageView!
     @IBOutlet weak var name: UILabel!
     @IBOutlet weak var ingredients: UILabel!
-    static let reuseId = "DishCell"
     override func awakeFromNib() {
         super.awakeFromNib()
         image.layer.masksToBounds = true

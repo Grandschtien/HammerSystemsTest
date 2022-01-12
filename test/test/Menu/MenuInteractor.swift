@@ -23,6 +23,7 @@ extension MenuInteractor: MenuInteractorInput {
                 else {
                     return
                 }
+//                print(newData.first?["instructions"] as? String)
                 var dishes = [Dish]()
                 for (index, value) in newData.enumerated() {
                     guard let dish = Dish(dict: value, index: index) else { continue }

@@ -12,7 +12,6 @@ protocol SelectCategoryProtocol: AnyObject {
 }
 
 class HeaderView: UICollectionReusableView {
-    static let reuseId = "HeaderView"
     weak var selectedCategory: SelectCategoryProtocol?
     private var previousIndex: IndexPath = IndexPath(item: 0, section: 0)
     @IBOutlet weak var collctionView: UICollectionView!
@@ -24,8 +23,8 @@ class HeaderView: UICollectionReusableView {
         collctionView.delegate = self
         collctionView.backgroundColor = UIColor(named: "backColor")
         collctionView.contentInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
-        collctionView.register(UINib(nibName: "HeaderCell", bundle: nil),
-                               forCellWithReuseIdentifier: HeaderCell.reuseId)
+        collctionView.register(UINib(nibName: HeaderCell.nibName, bundle: nil),
+                               forCellWithReuseIdentifier: HeaderCell.reuseIdentifier)
     }
     
 }
@@ -36,8 +35,7 @@ extension HeaderView: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HeaderCell.reuseId,
-                                                            for: indexPath) as? HeaderCell else { return UICollectionViewCell()}
+        let cell = collectionView.dequeueCell(cellType: HeaderCell.self, for: indexPath)
         if indexPath.item == 0 && previousIndex.item == 0 {
             cell.isSelectedCell = true
         }

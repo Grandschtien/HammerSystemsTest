@@ -12,13 +12,15 @@ struct Dish: Codable {
     let image: String
     let dishTypes: [String]
     let extendedIngredients: [String]
+    let instructions: String
     
     init?(dict: [String: Any], index: Int) {
         guard let id = dict["id"] as? Int,
               let title = dict["title"] as? String,
               let image = dict["image"] as? String,
               let dishTypes = dict["dishTypes"] as? [String],
-              let extendedIngredientsArray = dict["extendedIngredients"] as? [[String: Any]]
+              let extendedIngredientsArray = dict["extendedIngredients"] as? [[String: Any]],
+              let instructions = dict["instructions"] as? String
         else {
             return nil
         }
@@ -29,6 +31,7 @@ struct Dish: Codable {
         self.extendedIngredients = extendedIngredientsArray.compactMap({ dict in
             return dict["name"] as? String
         })
+        self.instructions = instructions
     }
 }
 

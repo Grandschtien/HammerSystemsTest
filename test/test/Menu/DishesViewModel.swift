@@ -13,4 +13,8 @@ struct DishesViewModel {
     let image: URL?
     let resource: ImageResource?
     let extendedIngredients: String
+    let instructions: String
+    var arrayOfInstructions: [String]?
+    
+    
 }

@@ -13,6 +13,7 @@ protocol MenuModuleInput {
 }
 
 protocol MenuModuleOutput: AnyObject {
+    
 }
 
 protocol MenuViewInput: AnyObject {
@@ -26,6 +27,7 @@ protocol MenuViewOutput: AnyObject {
     var numberOfCellsInDishSection: Int { get }
     var advPhoto: String { get }
     func viewDidLoad()
+    func goToProduct(viewModel: DishesViewModel) 
 }
 
 protocol MenuInteractorInput: AnyObject {
@@ -38,5 +40,6 @@ protocol MenuInteractorOutput: AnyObject {
 }
 
 protocol MenuRouterInput: AnyObject {
+    func gotToProductScreen(viewModel: DishesViewModel)
 }
 
